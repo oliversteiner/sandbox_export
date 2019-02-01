@@ -1,7 +1,7 @@
 sandbox_export.hello:
   path: '/export-hello/{name}'
   defaults:
-    _controller: '\Drupal\sandbox_export\Controller\PdfTestController::hello'
+    _controller: '\Drupal\sandbox_export\Controller\ExportPdfController::hello'
     _title: 'PDF Test'
     name: null
   requirements:
@@ -10,7 +10,7 @@ sandbox_export.hello:
 sandbox_export.pdf:
   path: '/pdf/{mode}'
   defaults:
-    _controller: '\Drupal\sandbox_export\Controller\PdfTestController::pdf'
+    _controller: '\Drupal\sandbox_export\Controller\ExportPdfController::pdf'
     _title: 'PDF Test'
     mode: null
   requirements:
@@ -18,9 +18,9 @@ sandbox_export.pdf:
 
 
 sandbox_export.xlsx:
-  path: '/xlsx/{mode}'
+  path: '/xlsx2/{mode}'
   defaults:
-    _controller: '\Drupal\sandbox_export\Controller\XlsxTestController::export'
+    _controller: '\Drupal\sandbox_export\Controller\ExportXlsxController::export'
     _title: 'xlsx Test'
     mode: null
   requirements:
