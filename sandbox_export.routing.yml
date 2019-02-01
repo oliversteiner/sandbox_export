@@ -18,7 +18,7 @@ sandbox_export.pdf:
 
 
 sandbox_export.xlsx:
-  path: '/xlsx2/{mode}'
+  path: '/xlsx/{mode}'
   defaults:
     _controller: '\Drupal\sandbox_export\Controller\ExportXlsxController::export'
     _title: 'xlsx Test'
