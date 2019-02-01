@@ -71,15 +71,13 @@ class ExportPdfController extends ControllerBase
     return ['ein', 'zwei', 'drei', 'polizei' => 'hui'];
   }
 
-  private function buildHtml(): array
+  private function content(): array
   {
     $data = $this->getData();
     // HTML
     $template =
       drupal_get_path('module', $this->getModuleName()) .
       '/templates/pdf-view.html.twig';
-
-    $template = file_get_contents($template);
 
     $build_html = [
       'description' => [
@@ -93,6 +91,57 @@ class ExportPdfController extends ControllerBase
     return $build_html;
   }
 
+  /**
+   * Build a render array of the content, wrapped in the printable theme.
+   *
+   * @return array
+   *   A render array representing the themed output of the content.
+   */
+  protected function buildContent($mode): array
+  {
+
+    $paper_css = drupal_get_path('module', $this->getModuleName()) .
+      '/assets/css/paper-css/paper.min.css';
+
+    $pdf_css = drupal_get_path('module', $this->getModuleName()) .
+      '/assets/css/pdf_a4.css';
+
+    if($mode === 'test'){
+      $paper_css = '/'.$paper_css;
+      $pdf_css = '/'.$pdf_css;
+    }
+
+    $build = [
+      '#theme' => ['pdf'],
+      '#content' => $this->content(),
+
+      // Vars
+      '#paper_css' => $paper_css,
+      '#pdf_css' => $pdf_css,
+      '#mode' => $mode,
+
+      // Sub templates
+      '#header' => [
+        '#theme' => [
+          'pdf_export_header__' . $this->getModuleName(),
+          'printable_header',
+        ],
+        '#logo_url' => theme_get_setting('logo.url'),
+      ],
+      '#footer' => [
+        '#theme' => [
+          'printable_footer__' . $this->getModuleName(),
+          'printable_footer',
+        ],
+        '#footer_content' => [],
+      ],
+
+    ];
+
+    return $build;
+  }
+
+
   public function Pdf($mode = false)
   {
     // Configure Dompdf according to your needs
@@ -103,46 +152,48 @@ class ExportPdfController extends ControllerBase
     $dompdf = new Dompdf($pdfOptions);
 
     // Retrieve the HTML generated in our twig file
-    $html = $this->buildHtml();
+    $html = $this->buildContent($mode);
 
     // Load HTML to Dompdf
     $html = \Drupal::service('renderer')->render($html);
 
-
     if ($mode === 'test') {
+      // Render and Show in Browser
       return new Response($html);
-
-    } else {
-
-      $dompdf->loadHtml($html);
-
-      // (Optional) Setup the paper size and orientation 'portrait' or 'portrait'
-      $dompdf->setPaper('A4', 'portrait');
-
-      // Render the HTML as PDF
-      $dompdf->render();
-
-      // Store PDF Binary Data
-      $output = $dompdf->output();
-
-
-      $filename = 'mypdf.pdf';
-
-      $publicDirectory = \Drupal::service('file_system')->realpath(
-        file_default_scheme() . '://'
-      );
-
-      $filepath = $publicDirectory . '/' . $filename;
-
-      // Write file to the desired path
-      file_put_contents($filepath, $output);
-      $save_file = true;
-
-      return (new BinaryFileResponse(
-        $filepath,
-        200,
-        $this->getHeaders($filename, $save_file)
-      ))->deleteFileAfterSend(true);
     }
+
+// Retrieve the HTML generated in our twig file
+    $html = $this->buildContent('pdf');
+
+    // Load HTML to Dompdf
+    $html = \Drupal::service('renderer')->render($html);
+    $dompdf->loadHtml($html);
+
+    // (Optional) Setup the paper size and orientation 'portrait' or 'portrait'
+    $dompdf->setPaper('A4', 'portrait');
+
+    // Render the HTML as PDF
+    $dompdf->render();
+
+    // Store PDF Binary Data
+    $output = $dompdf->output();
+
+    $filename = 'mypdf.pdf';
+
+    $publicDirectory = \Drupal::service('file_system')->realpath(
+      file_default_scheme() . '://'
+    );
+
+    $filepath = $publicDirectory . '/' . $filename;
+
+    // Write file to the desired path
+    file_put_contents($filepath, $output);
+    $save_file = true;
+
+    return (new BinaryFileResponse(
+      $filepath,
+      200,
+      $this->getHeaders($filename, $save_file)
+    ))->deleteFileAfterSend(true);
   }
 }

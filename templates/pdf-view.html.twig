@@ -1,8 +1,13 @@
 <!-- Add you custom twig html here -->
 
+<style> h2 {
+    color: orange;
+  }</style>
 
-{{ dd(content) }}
-{{ dd(polizei) }}
+<h1>Test</h1>
 
+<h2>Test 2</h2>
 
+<!-- Each sheet element should have the class "sheet" -->
+<!-- "padding-**mm" is optional: you can set 10, 15, 20 or 25 -->
 {{ drupal_view('pdf_view','page_1') }}

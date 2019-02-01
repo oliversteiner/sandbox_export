@@ -8,7 +8,7 @@ sandbox_export.hello:
     _permission: 'access content'
 
 sandbox_export.pdf:
-  path: '/pdf/{mode}'
+  path: '/pdf-test/{mode}'
   defaults:
     _controller: '\Drupal\sandbox_export\Controller\ExportPdfController::pdf'
     _title: 'PDF Test'

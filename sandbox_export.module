@@ -6,6 +6,7 @@
  */
 
 use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Template\Attribute;
 
 /**
  * Implements hook_help().
@@ -29,7 +30,33 @@ function sandbox_export_help($route_name, RouteMatchInterface $route_match)
  */
 function sandbox_export_theme()
 {
+  $module_path = drupal_get_path('module', 'sandbox_export');
+
   return [
+    'pdf' => [
+      'template' => 'pdf',
+      'pattern' => 'pdf_export__',
+      'variables' => [
+        'header' => NULL,
+        'content' => NULL,
+        'footer' => NULL,
+        'paper_css' => NULL,
+        'pdf_css' => NULL,
+      ],
+      'path' => $module_path . '/templates',
+    ],
+    'printable_pdf_footer' => [
+      'template' => 'printable-footer',
+      'pattern' => 'pdf_export_footer__',
+      'variables' => [],
+      'path' => $module_path . '/templates',
+    ],
+    'printable_pdf_header' => [
+      'template' => 'printable-header',
+      'pattern' => 'pdf_export_header__',
+      'variables' => [],
+      'path' => $module_path . '/templates',
+    ],
     'sandbox_export' => [
       'variables' => [
         'hallo' => NULL,
@@ -37,4 +64,26 @@ function sandbox_export_theme()
       ]
     ],
   ];
+}
+
+/**
+ * Preprocess variables for list of printable printer friendly page.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - elements: Array of participant names.
+ */
+function template_preprocess_sandbox_export(array &$variables) {
+  global $base_url;
+
+  $variables['base_url'] = $base_url . '/' . drupal_get_path('module', 'sandbox_export');
+
+  $language_interface = \Drupal::languageManager()->getCurrentLanguage();
+  $variables['html_attributes'] = new Attribute([
+    'lang' => $language_interface->getId(),
+    'dir' => $language_interface->getDirection(),
+  ]);
+
+
+
 }
