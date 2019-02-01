@@ -1,0 +1,40 @@
+<?php
+
+/**
+ * @file
+ * Contains sandbox_export.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function sandbox_export_help($route_name, RouteMatchInterface $route_match)
+{
+  switch ($route_name) {
+    // Main module help for the sandbox_export module.
+    case 'help.page.sandbox_export':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Generate pdf from html / Twig with dompdf') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function sandbox_export_theme()
+{
+  return [
+    'sandbox_export' => [
+      'variables' => [
+        'hallo' => NULL,
+        'name2' => NULL
+      ]
+    ],
+  ];
+}

@@ -1,0 +1,27 @@
+sandbox_export.hello:
+  path: '/export-hello/{name}'
+  defaults:
+    _controller: '\Drupal\sandbox_export\Controller\PdfTestController::hello'
+    _title: 'PDF Test'
+    name: null
+  requirements:
+    _permission: 'access content'
+
+sandbox_export.pdf:
+  path: '/pdf/{mode}'
+  defaults:
+    _controller: '\Drupal\sandbox_export\Controller\PdfTestController::pdf'
+    _title: 'PDF Test'
+    mode: null
+  requirements:
+    _permission: 'access content'
+
+
+sandbox_export.xlsx:
+  path: '/xlsx/{mode}'
+  defaults:
+    _controller: '\Drupal\sandbox_export\Controller\XlsxTestController::export'
+    _title: 'xlsx Test'
+    mode: null
+  requirements:
+    _permission: 'access content'

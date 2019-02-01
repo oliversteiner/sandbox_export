@@ -1,0 +1,5 @@
+name: 'Sandbox Export'
+type: module
+description: 'Generate pdf from html / Twig with dompdf'
+core: 8.x
+package: 'PDF'

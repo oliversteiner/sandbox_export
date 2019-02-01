@@ -1,0 +1,13 @@
+{
+  "name": "drupal/sandbox_export",
+  "type": "drupal-module",
+  "description": "Generate either pdf from html / Twig with dompdf",
+  "keywords": ["Drupal"],
+  "license": "GPL-2.0+",
+  "homepage": "https://www.drupal.org/project/sandbox_export",
+  "minimum-stability": "dev",
+  "support": {
+    "issues": "https://www.drupal.org/project/issues/sandbox_export",
+    "source": "http://cgit.drupalcode.org/sandbox_export"
+  }
+}
