@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Class PdfTestController.
+ * Class ExportPdfController.
  */
 class ExportPdfController extends ControllerBase
 {
@@ -51,13 +51,13 @@ class ExportPdfController extends ControllerBase
    * @return array
    *   Default headers for the response object.
    */
-  private function getHeaders($filename, $download): array
+  private function getHeaders($filename, $filepath, $download): array
   {
     $disposition = $download ? 'attachment' : 'inline';
     return [
       'Content-Type' => Unicode::mimeHeaderEncode('application/pdf'),
       'Content-Disposition' => $disposition . '; filename="' . $filename . '"',
-      'Content-Length' => filesize($filename),
+      'Content-Length' => filesize($filepath),
       'Content-Transfer-Encoding' => 'binary',
       'Pragma' => 'no-cache',
       'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
@@ -82,7 +82,7 @@ class ExportPdfController extends ControllerBase
     $build_html = [
       'description' => [
         '#type' => 'inline_template',
-        '#template' => $template,
+        '#template' => file_get_contents($template),
         '#context' => $data,
       ],
     ];
@@ -144,6 +144,9 @@ class ExportPdfController extends ControllerBase
 
   public function Pdf($mode = false)
   {
+
+    $filename = 'mypdf.pdf';
+
     // Configure Dompdf according to your needs
     $pdfOptions = new Options();
     $pdfOptions->set('defaultFont', 'Arial');
@@ -178,7 +181,6 @@ class ExportPdfController extends ControllerBase
     // Store PDF Binary Data
     $output = $dompdf->output();
 
-    $filename = 'mypdf.pdf';
 
     $publicDirectory = \Drupal::service('file_system')->realpath(
       file_default_scheme() . '://'
@@ -193,7 +195,7 @@ class ExportPdfController extends ControllerBase
     return (new BinaryFileResponse(
       $filepath,
       200,
-      $this->getHeaders($filename, $save_file)
+      $this->getHeaders($filename, $filepath, $save_file)
     ))->deleteFileAfterSend(true);
   }
 }
